@@ -1,0 +1,129 @@
+[
+  {
+    "module": "mangaforfreecom",
+    "lang": "en",
+    "name": "Mangaforfree.com",
+    "baseUrl": "https://mangaforfree.com"
+  },
+  {
+    "module": "komikindolive",
+    "lang": "en",
+    "name": "Komikindo.live",
+    "baseUrl": "https://komikindo.live"
+  },
+  {
+    "module": "manga18fx",
+    "lang": "en",
+    "name": "Manga18fx",
+    "baseUrl": "https://manga18fx.com"
+  },
+  {
+    "module": "manga18club",
+    "lang": "en",
+    "name": "Manga18.Club",
+    "baseUrl": "https://manga18.club"
+  },
+  {
+    "module": "ikanwzd",
+    "lang": "zh",
+    "name": "漫小肆韓漫",
+    "baseUrl": "https://www.ikanwzd.cc"
+  },
+  {
+    "module": "eighteenmh",
+    "lang": "zh",
+    "name": "18漫畫",
+    "baseUrl": "https://18mh.org"
+  },
+  {
+    "module": "bakamh",
+    "lang": "zh",
+    "name": "巴卡漫画",
+    "baseUrl": "https://bakamh.com"
+  },
+  {
+    "module": "baozimanhua",
+    "lang": "zh",
+    "name": "包子漫画",
+    "baseUrl": "https://www.baozimh.com"
+  },
+  {
+    "module": "baozimhorg",
+    "lang": "zh",
+    "name": "GoDa漫画",
+    "baseUrl": "https://baozimh.org"
+  },
+  {
+    "module": "mangacopy",
+    "lang": "zh",
+    "name": "拷貝漫畫",
+    "baseUrl": "https://www.mangacopy.com"
+  },
+  {
+    "module": "hanime1",
+    "lang": "zh",
+    "name": "Hanime1",
+    "baseUrl": "https://hanime1.me"
+  },
+  {
+    "module": "hipmh",
+    "lang": "zh",
+    "name": "嘻皮漫畫",
+    "baseUrl": "https://m.hipmh.com",
+    "derivedFrom": "happymh"
+  },
+  {
+    "module": "ho5ho",
+    "lang": "zh",
+    "name": "Ho5Ho",
+    "baseUrl": "https://www.ho5ho.com"
+  },
+  {
+    "module": "bilimanga",
+    "lang": "zh",
+    "name": "哔哩漫画",
+    "baseUrl": "https://www.bilimanga.net"
+  },
+  {
+    "module": "komiic",
+    "lang": "zh",
+    "name": "Komiic",
+    "baseUrl": "https://komiic.com"
+  },
+  {
+    "module": "mycomic",
+    "lang": "zh",
+    "name": "MyComic",
+    "baseUrl": "https://mycomic.com"
+  },
+  {
+    "module": "wnacg",
+    "lang": "zh",
+    "name": "紳士漫畫",
+    "baseUrl": "https://www.wnacg.com"
+  },
+  {
+    "module": "zaimanhua",
+    "lang": "zh",
+    "name": "再漫画",
+    "baseUrl": "https://www.zaimanhua.com"
+  },
+  {
+    "module": "jinmantiantang",
+    "lang": "zh",
+    "name": "禁漫天堂",
+    "baseUrl": "https://18comic.vip"
+  },
+  {
+    "module": "pawomh",
+    "lang": "zh",
+    "name": "pawo漫画",
+    "baseUrl": "https://pawomh1.cc"
+  },
+  {
+    "module": "templescanesp",
+    "lang": "es",
+    "name": "Temple Scan",
+    "baseUrl": "https://aedexnox.pwhost.xyz"
+  }
+]

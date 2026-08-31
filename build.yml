@@ -1,0 +1,60 @@
+name: Build Sheep Manga
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Sheep Manga
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Clone extension source
+        run: |
+          git clone --depth 1 https://github.com/ToSeeAll/extensions-source.git upstream
+
+      - name: Prepare Hipmh
+        run: |
+          python3 scripts/prepare_hipmh.py
+
+      - name: Restore signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "KEYSTORE_B64 secret is missing"
+            exit 1
+          fi
+          echo "$KEYSTORE_B64" | base64 -d > upstream/signingkey.jks
+
+      - name: Build Hipmh
+        working-directory: upstream
+        env:
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew :src:zh:hipmh:assembleRelease --stacktrace
+
+      - name: Collect APKs
+        run: |
+          mkdir -p out/apk
+          find upstream/src/zh/hipmh/build/outputs/apk/release -name '*.apk' -exec cp {} out/apk/ \;
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheep-manga-apks
+          path: out/apk/*.apk
+          if-no-files-found: error
