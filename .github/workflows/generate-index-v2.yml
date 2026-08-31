@@ -62,7 +62,6 @@ jobs:
           message Resources {
             string apkUrl = 1;
             string iconUrl = 2;
-            string jarUrl = 501;
           }
 
           message Source {
@@ -111,6 +110,7 @@ jobs:
           ext.packageName = "eu.kanade.tachiyomi.extension.zh.hipmh"
 
           ext.resources.apkUrl = "https://raw.githubusercontent.com/sheep0614-Lin/Sheep-manga/main/repo/apk/tachiyomi-zh.hipmh-v1.4.20-release.apk"
+          ext.resources.iconUrl = "https://github.githubassets.com/favicons/favicon.png"
 
           ext.extensionLib = "1.4"
           ext.versionCode = 20
@@ -118,6 +118,7 @@ jobs:
           ext.contentWarning = index_pb2.CONTENT_WARNING_SAFE
 
           source = ext.sources.add()
+
           source.id = 1966209498498498498
           source.name = "嘻皮漫畫"
           source.language = "zh"
@@ -143,6 +144,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "index.pb is already up to date."
           else
-            git commit -m "Generate index.pb"
+            git commit -m "Update index.pb"
             git push
           fi
