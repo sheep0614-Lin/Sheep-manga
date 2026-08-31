@@ -4,48 +4,41 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate:
+  generate-key:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Generate signing key
+      - name: Generate key
+        shell: bash
         run: |
-          KEY_PASS=$(openssl rand -hex 16)
+          PASSWORD="$(openssl rand -hex 16)"
+
           keytool -genkeypair \
             -keystore signingkey.jks \
-            -storepass "$KEY_PASS" \
-            -keypass "$KEY_PASS" \
+            -storepass "$PASSWORD" \
+            -keypass "$PASSWORD" \
             -alias sheep-manga \
             -keyalg RSA \
             -keysize 4096 \
             -validity 10000 \
-            -dname "CN=Sheep Manga, OU=Extensions, O=Sheep Manga, C=TW"
+            -dname "CN=Sheep Manga, O=Sheep Manga, C=TW"
 
-          echo "$KEY_PASS" > KEY_PASSWORD.txt
+          echo "$PASSWORD" > KEY_PASSWORD.txt
 
           keytool -list -v \
             -keystore signingkey.jks \
-            -storepass "$KEY_PASS" \
+            -storepass "$PASSWORD" \
             -alias sheep-manga \
-            | grep "SHA256:" \
-            | sed 's/.*SHA256: //' \
-            | tr -d ':' \
-            | tr '[:upper:]' '[:lower:]' \
-            > SIGNING_KEY_FINGERPRINT.txt
+            > key-info.txt
 
           base64 -w 0 signingkey.jks > KEYSTORE_B64.txt
 
-      - name: Package key backup
-        run: |
-          zip sheep-manga-signing-key.zip \
-            signingkey.jks \
-            KEY_PASSWORD.txt \
-            SIGNING_KEY_FINGERPRINT.txt \
-            KEYSTORE_B64.txt
-
-      - name: Upload key backup
+      - name: Upload signing key
         uses: actions/upload-artifact@v4
         with:
           name: sheep-manga-signing-key
-          path: sheep-manga-signing-key.zip
+          path: |
+            signingkey.jks
+            KEY_PASSWORD.txt
+            KEYSTORE_B64.txt
+            key-info.txt
           retention-days: 1
