@@ -1,0 +1,148 @@
+name: Generate index.pb
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install protobuf tools
+        run: pip install protobuf grpcio-tools
+
+      - name: Create protobuf definition
+        run: |
+          cat > /tmp/index.proto <<'EOF'
+          syntax = "proto3";
+
+          message Index {
+            string name = 1;
+            string badgeLabel = 2;
+            string signingKey = 3;
+            Contact contact = 4;
+
+            oneof extensions {
+              ExtensionList extensionList = 101;
+              string extensionListUrl = 102;
+            }
+          }
+
+          message Contact {
+            string website = 1;
+            optional string discord = 2;
+          }
+
+          message ExtensionList {
+            repeated Extension extensions = 1;
+          }
+
+          message Extension {
+            string name = 1;
+            string packageName = 2;
+            Resources resources = 3;
+            string extensionLib = 4;
+            int64 versionCode = 5;
+            string versionName = 6;
+            ContentWarning contentWarning = 7;
+            repeated Source sources = 8;
+          }
+
+          message Resources {
+            string apkUrl = 1;
+            string iconUrl = 2;
+            string jarUrl = 501;
+          }
+
+          message Source {
+            int64 id = 1;
+            string name = 2;
+            string language = 3;
+            string homeUrl = 4;
+            repeated string mirrorUrls = 5;
+            optional string message = 7;
+          }
+
+          enum ContentWarning {
+            CONTENT_WARNING_UNSPECIFIED = 0;
+            CONTENT_WARNING_SAFE = 1;
+            CONTENT_WARNING_MIXED = 2;
+            CONTENT_WARNING_NSFW = 3;
+          }
+          EOF
+
+      - name: Compile protobuf
+        run: |
+          python -m grpc_tools.protoc \
+            -I/tmp \
+            --python_out=/tmp \
+            /tmp/index.proto
+
+      - name: Generate index.pb
+        run: |
+          cat > /tmp/generate_index.py <<'EOF'
+          import gzip
+          import sys
+
+          sys.path.insert(0, "/tmp")
+          import index_pb2
+
+          index = index_pb2.Index()
+
+          index.name = "Sheep Manga"
+          index.badgeLabel = "Sheep Manga"
+          index.signingKey = "350d466b70da334d5fa2282a83c0ab6b5d7da95869ced7570798f4fee2f2c0f9"
+          index.contact.website = "https://github.com/sheep0614-Lin/Sheep-manga"
+
+          ext = index.extensionList.extensions.add()
+
+          ext.name = "嘻皮漫畫"
+          ext.packageName = "eu.kanade.tachiyomi.extension.zh.hipmh"
+
+          ext.resources.apkUrl = "https://raw.githubusercontent.com/sheep0614-Lin/Sheep-manga/main/repo/apk/tachiyomi-zh.hipmh-v1.4.20-release.apk"
+
+          ext.extensionLib = "1.4"
+          ext.versionCode = 20
+          ext.versionName = "1.4.20"
+          ext.contentWarning = index_pb2.CONTENT_WARNING_SAFE
+
+          source = ext.sources.add()
+          source.id = 1966209498498498498
+          source.name = "嘻皮漫畫"
+          source.language = "zh"
+          source.homeUrl = "https://m.hipmh.com"
+
+          data = index.SerializeToString()
+
+          with gzip.open("repo/index.pb", "wb") as f:
+              f.write(data)
+
+          print("repo/index.pb generated successfully")
+          EOF
+
+          python /tmp/generate_index.py
+
+      - name: Commit index.pb
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add repo/index.pb
+
+          if git diff --cached --quiet; then
+            echo "index.pb is already up to date."
+          else
+            git commit -m "Generate index.pb"
+            git push
+          fi
